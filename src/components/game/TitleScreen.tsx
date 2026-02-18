@@ -62,33 +62,42 @@ export function TitleScreen() {
           className="text-center max-w-lg"
         >
           <h2 className="text-3xl font-bold text-[#00d9ff] mb-8 tracking-wider">CREDITS</h2>
-          
+
           <div className="space-y-6 text-gray-400">
             <div>
               <div className="text-[#ff006e] text-sm tracking-wider mb-2">CREATED BY</div>
-              <div className="text-gray-300">AI-Powered Interactive Fiction</div>
+              <div className="text-gray-300 text-lg">
+                <a
+                  href="https://www.linkedin.com/in/anubhav-chaudhary-4bba7918b/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[#00d9ff] transition-colors underline decoration-[#ff006e]/30 underline-offset-4"
+                >
+                  Anubhav
+                </a>
+              </div>
             </div>
-            
+
             <div>
               <div className="text-[#ff006e] text-sm tracking-wider mb-2">STORY & DESIGN</div>
               <div className="text-gray-300">Inspired by the resilience of Delhi Metro</div>
             </div>
-            
+
             <div>
               <div className="text-[#ff006e] text-sm tracking-wider mb-2">SPECIAL THANKS</div>
               <div className="text-gray-300 text-sm leading-relaxed">
-                To the engineers, workers, and dreamers who built the Delhi Metro - 
+                To the engineers, workers, and dreamers who built the Delhi Metro -
                 a symbol of modern India connecting millions every day.
               </div>
             </div>
-            
+
             <div className="pt-6 border-t border-slate-700">
               <div className="text-xs text-gray-500">
                 Set in 2047 — 100 years after India&apos;s independence
               </div>
             </div>
           </div>
-          
+
           <button
             onClick={() => setShowCredits(false)}
             className="choice-button mt-8 px-8 text-gray-300 hover:text-[#00d9ff]"
