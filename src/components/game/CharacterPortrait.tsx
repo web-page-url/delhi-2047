@@ -51,14 +51,14 @@ export function CharacterPortrait({ character, mood = 'neutral', effect }: Chara
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: -100, opacity: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="fixed left-8 top-1/4 z-20"
+      className="fixed left-4 top-[35%] md:left-8 md:top-1/4 z-20 pointer-events-none"
     >
       <div className={`character-frame p-1 relative ${effect === 'glitch' ? 'glitch-text' : ''}`}>
         {/* Portrait image */}
-        <div 
+        <div
           className="w-48 h-64 relative overflow-hidden"
-          style={{ 
-            boxShadow: `0 0 30px ${moodColor}40, inset 0 0 30px rgba(0,0,0,0.5)` 
+          style={{
+            boxShadow: `0 0 30px ${moodColor}40, inset 0 0 30px rgba(0,0,0,0.5)`
           }}
         >
           <Image
@@ -70,9 +70,9 @@ export function CharacterPortrait({ character, mood = 'neutral', effect }: Chara
               filter: `drop-shadow(0 0 10px ${moodColor}50)`,
             }}
           />
-          
+
           {/* Overlay gradient */}
-          <div 
+          <div
             className="absolute inset-0"
             style={{
               background: `linear-gradient(180deg, transparent 0%, transparent 50%, ${moodColor}20 100%)`,
@@ -82,8 +82,8 @@ export function CharacterPortrait({ character, mood = 'neutral', effect }: Chara
           {/* Scan lines effect */}
           <div className="absolute inset-0 opacity-20 pointer-events-none">
             {Array.from({ length: 20 }).map((_, i) => (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 className="w-full h-px bg-white/10"
                 style={{ marginTop: i * 12 }}
               />
@@ -112,7 +112,7 @@ export function CharacterPortrait({ character, mood = 'neutral', effect }: Chara
 
         {/* Character info */}
         <div className="mt-2 px-2">
-          <div 
+          <div
             className="text-sm font-bold tracking-wide"
             style={{ color: moodColor, textShadow: `0 0 10px ${moodColor}50` }}
           >

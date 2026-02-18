@@ -23,32 +23,32 @@ export function EndingScreen() {
   // Determine ending based on morality
   const determineEnding = () => {
     const { humanity, authority, faith, evolution } = morality;
-    
+
     // Check for Rebirth ending (high humanity + evolution)
     if (humanity >= 60 && evolution >= 40) {
       return ENDINGS.find(e => e.id === 'rebirth')!;
     }
-    
+
     // Check for Iron Metro ending (high authority)
     if (authority >= 70) {
       return ENDINGS.find(e => e.id === 'iron_metro')!;
     }
-    
+
     // Check for Radiant Ascension (high faith + evolution)
     if (faith >= 60 && evolution >= 70) {
       return ENDINGS.find(e => e.id === 'radiant_ascension')!;
     }
-    
+
     // Default to Rebirth if humanity is highest
     if (humanity >= authority && humanity >= faith && humanity >= evolution) {
       return ENDINGS.find(e => e.id === 'rebirth')!;
     }
-    
+
     // Default to Iron Metro if authority is highest
     if (authority >= humanity && authority >= faith && authority >= evolution) {
       return ENDINGS.find(e => e.id === 'iron_metro')!;
     }
-    
+
     // Default to Radiant Ascension
     return ENDINGS.find(e => e.id === 'radiant_ascension')!;
   };
@@ -74,7 +74,7 @@ export function EndingScreen() {
       className="ending-screen min-h-screen flex flex-col items-center justify-center p-8"
     >
       {/* Background effects */}
-      <div 
+      <div
         className="absolute inset-0 overflow-hidden"
         style={{
           background: `radial-gradient(ellipse at center, ${color}10 0%, transparent 50%)`,
@@ -88,14 +88,14 @@ export function EndingScreen() {
         transition={{ duration: 0.8, delay: 0.5 }}
         className="mb-8"
       >
-        <div 
+        <div
           className="w-24 h-24 rounded-full flex items-center justify-center"
           style={{
             background: `radial-gradient(circle, ${color}30 0%, transparent 70%)`,
             boxShadow: `0 0 60px ${color}40`,
           }}
         >
-          <Icon 
+          <Icon
             className="w-12 h-12"
             style={{ color }}
           />
@@ -209,14 +209,14 @@ export function EndingScreen() {
         </button>
       </motion.div>
 
-      {/* Credits */}
+      {/* Credits - Made relative to avoid overlap */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 3.5 }}
-        className="absolute bottom-8 text-center text-gray-600 text-xs tracking-wider"
+        className="mt-12 mb-4 text-center text-gray-600 text-[10px] md:text-xs tracking-widest"
       >
-        <p className="text-[#00d9ff]">DILLI 2047: THE LAST METRO</p>
+        <p className="text-[#00d9ff]">DELHI 2047: THE LAST METRO</p>
         <p className="mt-1">An Indian Sci-Fi Visual Novel</p>
       </motion.div>
     </motion.div>
