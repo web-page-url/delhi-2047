@@ -13,7 +13,7 @@ datasource db {
 model GameSave {
   id          String   @id @default(cuid())
   slotNumber  Int      @unique // 0 = auto-save, 1-3 = manual slots
-  playerName  String   @default("Arjun")
+  playerName  String   @default("Veer")
   currentAct  Int      @default(1) // 1, 2, or 3
   currentScene String  @default("intro")
   

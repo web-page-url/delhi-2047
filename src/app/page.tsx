@@ -11,6 +11,7 @@ import { GlitchOverlay } from '@/components/game/GlitchOverlay';
 import { RadiationMeter } from '@/components/game/RadiationMeter';
 import { MetroMap } from '@/components/game/MetroMap';
 import { VoiceToggle } from '@/components/game/VoiceToggle';
+import { MusicToggle } from '@/components/game/MusicToggle';
 import { AnimatePresence } from 'framer-motion';
 
 export default function Dilli2047() {
@@ -42,7 +43,7 @@ export default function Dilli2047() {
       {showGlitchEffects && <GlitchOverlay />}
       <div className="noise-overlay" />
       <div className="metro-map-overlay" />
-      
+
       {/* Main content */}
       <AnimatePresence mode="wait">
         {gamePhase === 'title' && <TitleScreen key="title" />}
@@ -53,12 +54,13 @@ export default function Dilli2047() {
               <RadiationMeter />
               <MetroMap />
             </div>
-            
+
             {/* Game Scene */}
             <GameScene />
-            
+
             {/* Voice Toggle - Fixed position */}
             <div className="fixed bottom-4 right-4 z-50 flex gap-2">
+              <MusicToggle />
               <VoiceToggle />
             </div>
           </div>
@@ -66,7 +68,7 @@ export default function Dilli2047() {
         {gamePhase === 'ending' && <EndingScreen key="ending" />}
         {gamePhase === 'menu' && <SettingsMenu key="menu" />}
       </AnimatePresence>
-      
+
       {/* Save/Load overlay */}
       <SaveLoadMenu />
     </main>

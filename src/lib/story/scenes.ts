@@ -81,7 +81,7 @@ export const STORY_SCENES: Record<string, StoryScene> = {
       },
       {
         speaker: 'Narrator',
-        text: 'You are Arjun. Born before the war. Raised in Rajiv Chowk Station.',
+        text: 'You are Veer. Born before the war. Raised in Rajiv Chowk Station.',
       },
       {
         speaker: 'Narrator',
@@ -119,7 +119,7 @@ export const STORY_SCENES: Record<string, StoryScene> = {
       {
         speaker: 'Priya',
         speakerId: 'priya',
-        text: 'Arjun! You need to hear this. We picked something up on the old frequencies.',
+        text: 'Veer! You need to hear this. We picked something up on the old frequencies.',
         mood: 'concerned',
       },
       {
@@ -152,7 +152,7 @@ export const STORY_SCENES: Record<string, StoryScene> = {
       {
         speaker: 'Priya',
         speakerId: 'priya',
-        text: 'They\'re... they\'re asking for you, Arjun.',
+        text: 'They\'re... they\'re asking for you, Veer.',
         mood: 'neutral',
       },
     ],
@@ -185,7 +185,7 @@ export const STORY_SCENES: Record<string, StoryScene> = {
       {
         speaker: 'Chairman Mehra',
         speakerId: 'chairman_mehra',
-        text: 'Arjun. Thank you for coming. We have a... situation.',
+        text: 'Veer. Thank you for coming. We have a... situation.',
         mood: 'concerned',
       },
       {
@@ -209,7 +209,7 @@ export const STORY_SCENES: Record<string, StoryScene> = {
       {
         speaker: 'Chairman Mehra',
         speakerId: 'chairman_mehra',
-        text: 'Arjun, we need someone to travel to Kashmere Gate. Investigate. Report back.',
+        text: 'Veer, we need someone to travel to Kashmere Gate. Investigate. Report back.',
         mood: 'hopeful',
       },
       {
@@ -302,7 +302,7 @@ export const STORY_SCENES: Record<string, StoryScene> = {
       {
         speaker: 'Priya',
         speakerId: 'priya',
-        text: 'Arjun... that wasn\'t just a warning. That was... an invitation?',
+        text: 'Veer... that wasn\'t just a warning. That was... an invitation?',
         mood: 'concerned',
       },
       {
@@ -398,7 +398,7 @@ export const STORY_SCENES: Record<string, StoryScene> = {
       {
         speaker: 'Old Vikram',
         speakerId: 'old_vikram',
-        text: 'Watch yourself out there, Arjun. Remember who you are.',
+        text: 'Watch yourself out there, Veer. Remember who you are.',
         mood: 'concerned',
       },
     ],
@@ -1074,7 +1074,7 @@ export const STORY_SCENES: Record<string, StoryScene> = {
       {
         speaker: 'The Elder One',
         speakerId: 'elder_one',
-        text: 'Welcome, Arjun. We have been waiting for you.',
+        text: 'Welcome, Veer. We have been waiting for you.',
         mood: 'neutral',
       },
       {
@@ -1110,7 +1110,7 @@ export const STORY_SCENES: Record<string, StoryScene> = {
       {
         speaker: 'The Elder One',
         speakerId: 'elder_one',
-        text: 'What will you choose, Arjun? For yourself. For underground India.',
+        text: 'What will you choose, Veer? For yourself. For underground India.',
         mood: 'neutral',
       },
     ],
@@ -1207,7 +1207,7 @@ export const STORY_SCENES: Record<string, StoryScene> = {
       {
         speaker: 'The Elder One',
         speakerId: 'elder_one',
-        text: 'You have chosen wisely, Arjun. You have chosen hope.',
+        text: 'You have chosen wisely, Veer. You have chosen hope.',
         mood: 'hopeful',
       },
       {

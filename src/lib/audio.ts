@@ -13,7 +13,7 @@ class AudioManager {
 
   init() {
     if (this.isInitialized) return;
-    
+
     try {
       this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       this.masterGain = this.audioContext.createGain();
@@ -40,25 +40,25 @@ class AudioManager {
     // Create low frequency hum
     this.ambientOscillator = this.audioContext.createOscillator();
     this.ambientGain = this.audioContext.createGain();
-    
+
     this.ambientOscillator.type = 'sine';
     this.ambientOscillator.frequency.value = 60; // Low hum
-    
+
     this.ambientGain.gain.value = volume;
-    
+
     this.ambientOscillator.connect(this.ambientGain);
     this.ambientGain.connect(this.masterGain);
-    
+
     this.ambientOscillator.start();
 
     // Add secondary layer
     const osc2 = this.audioContext.createOscillator();
     const gain2 = this.audioContext.createGain();
-    
+
     osc2.type = 'sine';
     osc2.frequency.value = 120;
     gain2.gain.value = volume * 0.3;
-    
+
     osc2.connect(gain2);
     gain2.connect(this.masterGain);
     osc2.start();
@@ -68,7 +68,7 @@ class AudioManager {
     if (this.ambientOscillator) {
       try {
         this.ambientOscillator.stop();
-      } catch {}
+      } catch { }
       this.ambientOscillator = null;
     }
   }
@@ -115,10 +115,10 @@ class AudioManager {
 
     oscillator.type = 'square';
     oscillator.frequency.value = 440;
-    
+
     // Quick frequency sweep
     oscillator.frequency.exponentialRampToValueAtTime(100, this.audioContext.currentTime + 0.1);
-    
+
     gain.gain.value = volume;
     gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
 
@@ -138,7 +138,7 @@ class AudioManager {
 
     oscillator.type = 'sine';
     oscillator.frequency.value = 800;
-    
+
     gain.gain.value = volume;
     gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.05);
 
@@ -160,14 +160,14 @@ class AudioManager {
 
     oscillator.type = 'sawtooth';
     oscillator.frequency.value = 80;
-    
+
     lfo.type = 'sine';
     lfo.frequency.value = 0.5;
     lfoGain.gain.value = 10;
-    
+
     lfo.connect(lfoGain);
     lfoGain.connect(oscillator.frequency);
-    
+
     gain.gain.value = volume;
     gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 2);
 
@@ -220,7 +220,7 @@ class AudioManager {
 
       osc.type = 'sine';
       osc.frequency.value = 60;
-      
+
       gain.gain.value = 0;
       gain.gain.setValueAtTime(0, this.audioContext!.currentTime + delay);
       gain.gain.linearRampToValueAtTime(volume, this.audioContext!.currentTime + delay + 0.02);
@@ -251,7 +251,7 @@ class AudioManager {
 let audioManager: AudioManager | null = null;
 
 export function useAudio() {
-  const { musicVolume, sfxVolume } = useGameStore();
+  const { musicVolume, sfxVolume, musicEnabled } = useGameStore();
   const initialized = useRef(false);
 
   useEffect(() => {
@@ -265,9 +265,9 @@ export function useAudio() {
 
   useEffect(() => {
     if (audioManager) {
-      audioManager.setMasterVolume(musicVolume);
+      audioManager.setMasterVolume(musicEnabled ? musicVolume : 0);
     }
-  }, [musicVolume]);
+  }, [musicVolume, musicEnabled]);
 
   const initAudio = useCallback(() => {
     if (!initialized.current && audioManager) {

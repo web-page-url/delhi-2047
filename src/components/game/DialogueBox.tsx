@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
 import { useVoice } from '@/lib/useVoice';
@@ -7,6 +8,7 @@ import { useVoice } from '@/lib/useVoice';
 interface DialogueBoxProps {
   speaker: string;
   text: string;
+  fullText?: string;
   effect?: 'glitch' | 'static' | 'whisper' | 'shout';
   isTyping?: boolean;
 }
@@ -21,12 +23,12 @@ const speakerVoices: Record<string, 'hi' | 'en'> = {
   '???': 'en',
 };
 
-export function DialogueBox({ speaker, text, effect, isTyping }: DialogueBoxProps) {
+export function DialogueBox({ speaker, text, fullText, effect, isTyping }: DialogueBoxProps) {
   const speakerColor = speakerColors[speaker] || '#00d9ff';
   const lang = speakerVoices[speaker] || 'en';
   const { speak, isSpeaking, isEnabled } = useVoice();
-  const dialogueId = `dialogue-${speaker}-${text.slice(0, 20)}`;
-  
+  const dialogueId = `dialogue-${speaker}-${(fullText || '').slice(0, 30)}`;
+
   const getEffectClass = () => {
     switch (effect) {
       case 'glitch': return 'glitch-text';
@@ -37,9 +39,22 @@ export function DialogueBox({ speaker, text, effect, isTyping }: DialogueBoxProp
     }
   };
 
-  const handleSpeak = () => {
-    speak(text, dialogueId, lang);
-  };
+  const handleSpeak = useCallback(() => {
+    if (!fullText) return;
+    speak(fullText, dialogueId, lang);
+  }, [fullText, speak, dialogueId, lang]);
+
+  // Auto-play voice when a new dialogue scene starts
+  useEffect(() => {
+    if (isEnabled && fullText) {
+      // Use a slightly longer delay to ensure the previous speech is fully cancelled
+      const timer = setTimeout(() => {
+        const textToSpeak = fullText;
+        speak(textToSpeak, dialogueId, lang);
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [fullText, isEnabled]); // Crucially removed handleSpeak and dialogueId from dependencies to avoid re-triggering while typing
 
   return (
     <motion.div
@@ -47,40 +62,18 @@ export function DialogueBox({ speaker, text, effect, isTyping }: DialogueBoxProp
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 50, opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="dialogue-box relative mx-4 mb-4 p-6"
+      className="dialogue-box relative mx-4 mb-10 p-6 md:mx-8 md:mb-14"
     >
       {/* Speaker name and voice button */}
-      <div 
+      <div
         className="text-sm font-bold tracking-widest mb-3 flex items-center justify-between"
       >
         <div className="flex items-center gap-2" style={{ color: speakerColor }}>
           <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: speakerColor }} />
           {speaker}
         </div>
-        
-        {/* Voice button */}
-        {isEnabled && text && !isTyping && (
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleSpeak();
-            }}
-            className={`p-1.5 rounded transition-colors ${
-              isSpeaking === dialogueId 
-                ? 'bg-[#00d9ff]/30 border border-[#00d9ff]' 
-                : 'bg-slate-800/50 border border-slate-700 hover:border-[#00d9ff]/50'
-            }`}
-            title={isSpeaking === dialogueId ? 'Speaking...' : 'Click to hear dialogue'}
-          >
-            {isSpeaking === dialogueId ? (
-              <VolumeX className="w-3.5 h-3.5 text-[#00d9ff]" />
-            ) : (
-              <Volume2 className="w-3.5 h-3.5 text-gray-400 hover:text-[#00d9ff]" />
-            )}
-          </motion.button>
-        )}
+
+
       </div>
 
       {/* Dialogue text */}
@@ -94,7 +87,7 @@ export function DialogueBox({ speaker, text, effect, isTyping }: DialogueBoxProp
       {/* Effect overlay */}
       {effect === 'static' && (
         <div className="absolute inset-0 pointer-events-none opacity-10">
-          <div 
+          <div
             className="w-full h-full"
             style={{
               background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)',

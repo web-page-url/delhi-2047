@@ -99,7 +99,7 @@ export interface ChoiceEffect {
   stat?: keyof MoralityStats;
   faction?: keyof FactionReputation;
   flag?: keyof GameFlags;
-  value: number | boolean;
+  value: number | boolean | string | null;
 }
 
 export interface SceneEffect {

@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { useGameStore } from "./store";
 
 export const useVoice = () => {
     const [isSpeaking, setIsSpeaking] = useState<string | null>(null);
-    const [isEnabled, setIsEnabled] = useState(true);
+    const { voiceEnabled: isEnabled, setVoiceEnabled } = useGameStore();
 
     const stop = useCallback(() => {
         if (typeof window !== "undefined") {
@@ -16,69 +17,79 @@ export const useVoice = () => {
     const speak = useCallback((text: string, id: string, lang: "hi" | "en" = "en") => {
         if (typeof window === "undefined" || !isEnabled) return;
 
-        // Stop current speech if clicking same text
-        if (isSpeaking === id) {
-            stop();
-            return;
-        }
-
-        // Clean text - remove markdown and special characters
+        // Clean text - remove markdown and technical markers
         const cleanText = text
-            .replace(/\*\*/g, '')
             .replace(/\[STATIC\]/g, '')
             .replace(/\[.*?\]/g, '')
+            .replace(/\*\*/g, '')
             .replace(/[^\w\s.,!?'"-]/g, ' ')
             .replace(/\s+/g, ' ')
             .trim();
 
         if (!cleanText) return;
 
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(cleanText);
-
-        // Wait for voices to load
-        const setVoice = () => {
-            const voices = window.speechSynthesis.getVoices();
-            
-            if (lang === "hi") {
-                // Hindi voice for Indian context
-                utterance.voice = voices.find(v => v.lang.includes("hi-IN")) || 
-                                  voices.find(v => v.lang.includes("hi")) || 
-                                  null;
-                utterance.rate = 0.85;
-                utterance.pitch = 1;
-            } else {
-                // English with Indian accent preference
-                utterance.voice = voices.find(v => v.lang.includes("en-IN")) || 
-                                  voices.find(v => v.lang.includes("en-GB")) || 
-                                  voices.find(v => v.lang.includes("en-US")) || 
-                                  voices.find(v => v.lang.includes("en")) ||
-                                  null;
-                utterance.rate = 0.9;
-                utterance.pitch = 1;
-            }
-        };
-
-        // Voices might not be loaded yet
-        if (window.speechSynthesis.getVoices().length === 0) {
-            window.speechSynthesis.onvoiceschanged = setVoice;
-        } else {
-            setVoice();
+        // If we're already speaking this exact ID, don't restart it (prevents stuttering)
+        if (isSpeaking === id && window.speechSynthesis.speaking) {
+            return;
         }
 
-        utterance.onend = () => setIsSpeaking(null);
-        utterance.onerror = () => setIsSpeaking(null);
+        // Browser quirk: ensure speech synthesis isn't paused
+        if (window.speechSynthesis.paused) {
+            window.speechSynthesis.resume();
+        }
 
-        setIsSpeaking(id);
-        window.speechSynthesis.speak(utterance);
-    }, [isSpeaking, stop, isEnabled]);
+        // Force stop any current speech
+        window.speechSynthesis.cancel();
+
+        // Small timeout for browser stability
+        const timer = setTimeout(() => {
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+
+            const setVoice = () => {
+                const voices = window.speechSynthesis.getVoices();
+
+                if (lang === "hi") {
+                    utterance.voice = voices.find(v => v.lang.includes("hi-IN")) ||
+                        voices.find(v => v.lang.includes("hi")) ||
+                        null;
+                    utterance.rate = 0.9;
+                    utterance.pitch = 1;
+                } else {
+                    utterance.voice = voices.find(v => v.lang.includes("en-IN")) ||
+                        voices.find(v => v.lang.includes("en-GB")) ||
+                        voices.find(v => v.lang.includes("en-US")) ||
+                        null;
+                    utterance.rate = 0.95;
+                    utterance.pitch = 1.05;
+                }
+            };
+
+            if (window.speechSynthesis.getVoices().length === 0) {
+                window.speechSynthesis.onvoiceschanged = setVoice;
+            } else {
+                setVoice();
+            }
+
+            utterance.onstart = () => setIsSpeaking(id);
+            utterance.onend = () => setIsSpeaking(null);
+            utterance.onerror = (event) => {
+                // 'interrupted' and 'canceled' are common when moving fast - ignore them
+                if (event.error !== 'interrupted' && event.error !== 'canceled') {
+                    console.error('SpeechSynthesis Error:', event.error, event);
+                }
+                setIsSpeaking(null);
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }, 80); // Increased buffer slightly for slower browsers
+
+        return () => clearTimeout(timer);
+    }, [isSpeaking, isEnabled]);
 
     const toggleVoice = useCallback(() => {
-        setIsEnabled(prev => {
-            if (prev) stop();
-            return !prev;
-        });
-    }, [stop]);
+        if (isEnabled) stop();
+        setVoiceEnabled(!isEnabled);
+    }, [isEnabled, stop, setVoiceEnabled]);
 
     // Cleanup on unmount
     useEffect(() => {

@@ -34,16 +34,16 @@ export function GameScene() {
   const [currentText, setCurrentText] = useState('');
   const scene = STORY_SCENES[currentScene] as StoryScene | undefined;
   const lastEffectRef = useRef<string | null>(null);
-  
-  const { 
-    initAudio, 
-    startAmbient, 
-    playStatic, 
-    playGlitch, 
-    playClick, 
+
+  const {
+    initAudio,
+    startAmbient,
+    playStatic,
+    playGlitch,
+    playClick,
     playWhisper,
     playHeartbeat,
-    playTension 
+    playTension
   } = useAudio();
 
   // Initialize audio on first interaction
@@ -94,7 +94,7 @@ export function GameScene() {
   // Typewriter effect
   useEffect(() => {
     if (!scene) return;
-    
+
     const dialogue = scene.dialogue[dialogueIndex];
     if (!dialogue) {
       // Check for choices or next scene
@@ -102,9 +102,9 @@ export function GameScene() {
         setShowChoices(true);
       } else if (scene.nextScene) {
         // Handle special transitions
-        if (scene.nextScene === 'ending_rebirth' || 
-            scene.nextScene === 'ending_iron' || 
-            scene.nextScene === 'ending_ascension') {
+        if (scene.nextScene === 'ending_rebirth' ||
+          scene.nextScene === 'ending_iron' ||
+          scene.nextScene === 'ending_ascension') {
           // Transition to ending
           setCurrentScene(scene.nextScene);
         } else if (scene.nextScene === 'credits') {
@@ -141,7 +141,7 @@ export function GameScene() {
   // Check if we need to show choices
   useEffect(() => {
     if (!scene) return;
-    
+
     if (dialogueIndex >= scene.dialogue.length && scene.choices && scene.choices.length > 0) {
       setShowChoices(true);
     }
@@ -149,7 +149,7 @@ export function GameScene() {
 
   const handleAdvance = useCallback(() => {
     if (!scene) return;
-    
+
     if (isTyping) {
       // Skip to end of text
       setDisplayedText(currentText);
@@ -165,7 +165,7 @@ export function GameScene() {
 
   const handleChoice = useCallback((choice: Choice) => {
     playClick();
-    
+
     // Apply effects
     choice.effects.forEach((effect) => {
       if (effect.type === 'morality' && effect.stat) {
@@ -204,12 +204,12 @@ export function GameScene() {
   }
 
   const currentDialogue = scene.dialogue[dialogueIndex];
-  const speaker = currentDialogue?.speakerId 
+  const speaker = currentDialogue?.speakerId
     ? scene.characters.find(c => c.id === currentDialogue.speakerId)
     : null;
 
   return (
-    <div 
+    <div
       className="min-h-screen flex flex-col cursor-pointer"
       onClick={handleAdvance}
     >
@@ -219,7 +219,7 @@ export function GameScene() {
       {/* Character Portrait */}
       <AnimatePresence mode="wait">
         {speaker && (
-          <CharacterPortrait 
+          <CharacterPortrait
             key={speaker.id}
             character={speaker}
             mood={currentDialogue?.mood}
@@ -229,17 +229,18 @@ export function GameScene() {
       </AnimatePresence>
 
       {/* Bottom section - Dialogue and Choices */}
-      <div className="mt-auto relative z-30">
+      <div className="mt-auto relative z-30 pb-4 md:pb-8">
         <AnimatePresence>
           {showChoices && scene.choices ? (
-            <ChoicePanel 
-              choices={scene.choices} 
+            <ChoicePanel
+              choices={scene.choices}
               onChoice={handleChoice}
             />
           ) : (
             <DialogueBox
               speaker={currentDialogue?.speaker || 'Narrator'}
               text={displayedText}
+              fullText={currentText}
               effect={currentDialogue?.effect}
               isTyping={isTyping}
             />
@@ -251,7 +252,7 @@ export function GameScene() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="absolute bottom-4 right-4 flex items-center gap-2 text-[#00d9ff] text-sm"
+            className="absolute bottom-16 right-8 md:bottom-24 md:right-12 flex items-center gap-2 text-[#00d9ff] text-sm"
           >
             <span className="tracking-wider">CONTINUE</span>
             <ChevronRight className="w-4 h-4 animate-pulse" />

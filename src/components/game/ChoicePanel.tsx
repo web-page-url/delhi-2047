@@ -23,7 +23,7 @@ export function ChoicePanel({ choices, onChoice }: ChoicePanelProps) {
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 50, opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="p-4 space-y-3"
+      className="p-4 pb-10 space-y-3"
     >
       <motion.div
         initial={{ opacity: 0 }}
@@ -57,10 +57,10 @@ export function ChoicePanel({ choices, onChoice }: ChoicePanelProps) {
             whileHover={{ width: '100%' }}
             className="absolute inset-0 bg-gradient-to-r from-[#00d9ff]/10 to-transparent"
           />
-          
+
           <ChevronRight className="w-4 h-4 text-[#00d9ff] opacity-0 group-hover:opacity-100 transition-opacity absolute left-2" />
           <span className="pl-6 relative z-10">{choice.text}</span>
-          
+
           {/* Glitch effect on important choices */}
           {(choice.id.includes('choose_') || choice.id.includes('join_') || choice.id.includes('attack_')) && (
             <motion.div
