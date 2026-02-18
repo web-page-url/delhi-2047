@@ -1,0 +1,87 @@
+// DILLI 2047: The Last Metro - Save System Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Game save slots (3 manual + 1 auto-save)
+model GameSave {
+  id          String   @id @default(cuid())
+  slotNumber  Int      @unique // 0 = auto-save, 1-3 = manual slots
+  playerName  String   @default("Arjun")
+  currentAct  Int      @default(1) // 1, 2, or 3
+  currentScene String  @default("intro")
+  
+  // Morality stats (hidden from player)
+  humanity    Int      @default(50)  // 0-100
+  authority   Int      @default(50)  // 0-100
+  faith       Int      @default(50)  // 0-100
+  evolution   Int      @default(50)  // 0-100
+  
+  // Faction reputation
+  rajivChowkRep    Int @default(50)
+  yamunaPuristRep  Int @default(0)
+  redLineRep       Int @default(0)
+  surfaceRep       Int @default(0)
+  
+  // Game state flags
+  hasSeenTransmission Boolean @default(false)
+  hasInvestigatedSignal Boolean @default(false)
+  hasChosenPath       Boolean @default(false)
+  chosenFaction       String? // 'rajiv_chowk', 'yamuna', 'red_line', 'alone'
+  hasReachedSurface   Boolean @default(false)
+  hasMadeContact      Boolean @default(false)
+  
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  decisions  Decision[]
+}
+
+// Player decision history
+model Decision {
+  id          String   @id @default(cuid())
+  saveId      String
+  sceneId     String   // Which scene this decision was made in
+  choiceId    String   // The choice the player made
+  choiceText  String   // Human-readable choice text
+  actNumber   Int      // Which act this belongs to
+  
+  // Morality changes from this decision
+  humanityChange  Int @default(0)
+  authorityChange Int @default(0)
+  faithChange     Int @default(0)
+  evolutionChange Int @default(0)
+  
+  createdAt   DateTime @default(now())
+  
+  save        GameSave @relation(fields: [saveId], references: [id], onDelete: Cascade)
+  
+  @@index([saveId])
+}
+
+// Unlocked endings gallery
+model EndingUnlocked {
+  id            String   @id @default(cuid())
+  endingId      String   @unique // 'rebirth', 'iron_metro', 'radiant_ascension'
+  endingTitle   String
+  unlockedAt    DateTime @default(now())
+  playerName    String
+  finalStats    String   // JSON string of final morality stats
+}
+
+// Audio settings
+model GameSettings {
+  id              String @id @default(cuid())
+  musicVolume     Float  @default(0.7)
+  sfxVolume       Float  @default(0.8)
+  ambientVolume   Float  @default(0.5)
+  textSpeed       Int    @default(50) // ms per character
+  autoAdvance     Boolean @default(false)
+  showGlitchEffects Boolean @default(true)
+}
